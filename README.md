@@ -210,3 +210,7 @@ apps/server/src/
 deploy/       服务器上的配置文件（nginx、systemd、环境变量）
 scripts/      部署脚本
 ```
+
+## 许可证
+
+[MIT](LICENSE)
