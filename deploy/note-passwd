@@ -1,0 +1,4 @@
+#!/bin/sh
+# 设置或修改笔记账号的密码：sudo note-passwd 用户名（账号不存在就新建）
+# 会提示输入两次新密码（不显示）。改完后所有设备需要重新登录。
+exec sudo -u note sh -c 'set -a; . /etc/note/note.env; set +a; exec /usr/bin/node --no-warnings /opt/note/server/server.mjs set-password "$0"' "${1:?用法：note-passwd 用户名}"

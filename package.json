@@ -1,0 +1,17 @@
+{
+  "name": "nestnote",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @note/web",
+    "dev:server": "npm run dev -w @note/server",
+    "build": "npm run build -w @note/web && npm run build -w @note/server",
+    "typecheck": "npm run typecheck -w @note/web && npm run typecheck -w @note/server",
+    "deploy": "bash scripts/deploy.sh"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

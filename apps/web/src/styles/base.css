@@ -1,0 +1,169 @@
+/*
+ * 视觉方向："墨水 + 荧光笔"。
+ * 冷白纸面、蓝黑墨水色的文字和强调色；选中文字时是荧光笔黄。
+ */
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --bg-sidebar: #f3f5f8;
+  --bg-pop: #ffffff;
+  --bg-hover: rgba(29, 42, 66, 0.06);
+  --bg-active: rgba(46, 79, 214, 0.1);
+  --bg-subtle: #f6f7fa;
+  --ink: #1d2433;
+  --ink-2: #4c5567;
+  --ink-3: #8a93a3;
+  --rule: #e2e6ed;
+  --rule-strong: #cfd5df;
+  --accent: #2e4fd6;
+  --accent-hover: #2441b8;
+  --accent-soft: rgba(46, 79, 214, 0.12);
+  --on-accent: #ffffff;
+  --marker: #ffe36e;
+  --selection: rgba(255, 221, 64, 0.55);
+  --danger: #c23a2b;
+  --danger-soft: rgba(194, 58, 43, 0.1);
+  --callout: #fff8d6;
+  --callout-rule: #f1d977;
+  --code-bg: #f3f5f8;
+  --shadow-pop: 0 12px 32px rgba(18, 28, 48, 0.14), 0 2px 6px rgba(18, 28, 48, 0.08);
+
+  --font-ui: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI',
+    'Microsoft YaHei', 'Segoe UI', 'Noto Sans SC', system-ui, sans-serif;
+  --font-mono: 'SF Mono', 'JetBrains Mono', ui-monospace, Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --radius-s: 4px;
+  --radius-m: 6px;
+  --radius-l: 10px;
+}
+
+/* 深色：跟随系统（没有手动选浅色时），或者手动选了深色 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --bg: #16191f;
+    --bg-sidebar: #1b1f26;
+    --bg-pop: #22272f;
+    --bg-hover: rgba(220, 228, 245, 0.07);
+    --bg-active: rgba(142, 164, 255, 0.16);
+    --bg-subtle: #1c2028;
+    --ink: #e4e7ed;
+    --ink-2: #a9b0bd;
+    --ink-3: #727a89;
+    --rule: #2b313b;
+    --rule-strong: #3a414d;
+    --accent: #8ea4ff;
+    --accent-hover: #a8b9ff;
+    --accent-soft: rgba(142, 164, 255, 0.16);
+    --on-accent: #10131a;
+    --marker: #8a7414;
+    --selection: rgba(255, 214, 10, 0.3);
+    --danger: #ef7a6c;
+    --danger-soft: rgba(239, 122, 108, 0.14);
+    --callout: #2a2614;
+    --callout-rule: #5c5120;
+    --code-bg: #1f242c;
+    --shadow-pop: 0 12px 32px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #16191f;
+  --bg-sidebar: #1b1f26;
+  --bg-pop: #22272f;
+  --bg-hover: rgba(220, 228, 245, 0.07);
+  --bg-active: rgba(142, 164, 255, 0.16);
+  --bg-subtle: #1c2028;
+  --ink: #e4e7ed;
+  --ink-2: #a9b0bd;
+  --ink-3: #727a89;
+  --rule: #2b313b;
+  --rule-strong: #3a414d;
+  --accent: #8ea4ff;
+  --accent-hover: #a8b9ff;
+  --accent-soft: rgba(142, 164, 255, 0.16);
+  --on-accent: #10131a;
+  --marker: #8a7414;
+  --selection: rgba(255, 214, 10, 0.3);
+  --danger: #ef7a6c;
+  --danger-soft: rgba(239, 122, 108, 0.14);
+  --callout: #2a2614;
+  --callout-rule: #5c5120;
+  --code-bg: #1f242c;
+  --shadow-pop: 0 12px 32px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--selection);
+  color: inherit;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  stroke-width: 1.8;
+}
+
+kbd {
+  font-family: var(--font-ui);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

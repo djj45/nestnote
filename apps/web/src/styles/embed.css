@@ -1,0 +1,405 @@
+/* ---------- 页面嵌入（文档 ⇄ 画布互相嵌套）、页面链接 ---------- */
+
+/* 页面链接：行内小标签 */
+.page-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+  padding: 0 4px 0 2px;
+  margin: 0 1px;
+  border-radius: var(--radius-s);
+  color: var(--ink);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: 3px;
+  cursor: pointer;
+  white-space: normal;
+}
+
+.page-link .page-icon {
+  width: 0.95em;
+  height: 0.95em;
+  align-self: center;
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+
+.page-link:hover {
+  background: var(--bg-hover);
+  text-decoration-color: var(--accent);
+}
+
+.ProseMirror-selectednode.page-link,
+.ProseMirror-selectednode > .page-link {
+  background: var(--accent-soft);
+}
+
+.page-link.is-missing {
+  color: var(--ink-3);
+  text-decoration: line-through;
+  cursor: default;
+}
+
+.page-link.is-trashed {
+  color: var(--ink-3);
+}
+
+/* ---------- 共用：头部、占位 ---------- */
+
+.embed-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 4px 0 10px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 13px;
+  color: var(--ink-2);
+  flex-shrink: 0;
+}
+
+.embed-head > .page-icon {
+  width: 15px;
+  height: 15px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.embed-title {
+  flex: 1;
+  min-width: 0;
+  height: 26px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  line-height: 26px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  outline: none;
+}
+
+input.embed-title:hover {
+  background: var(--bg-hover);
+}
+
+input.embed-title:focus {
+  background: var(--bg-subtle);
+  box-shadow: inset 0 0 0 1px var(--rule-strong);
+}
+
+.embed-title::placeholder {
+  color: var(--ink-3);
+  font-weight: 500;
+}
+
+.embed-title.is-missing {
+  color: var(--ink-3);
+  font-weight: 500;
+}
+
+.embed-head .tool-btn {
+  width: 26px;
+  height: 26px;
+}
+
+.embed-actions {
+  display: inline-flex;
+  align-items: center;
+}
+
+.embed-body {
+  position: relative;
+}
+
+.embed-placeholder {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 14px 16px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-3);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+}
+
+.embed-placeholder > .icon {
+  flex-shrink: 0;
+}
+
+.embed-placeholder > span {
+  flex: 1;
+  min-width: 0;
+}
+
+.embed-placeholder.is-button {
+  cursor: pointer;
+}
+
+.embed-placeholder.is-button:hover {
+  background: var(--bg-hover);
+  color: var(--ink-2);
+}
+
+.embed-placeholder.is-compact {
+  height: 100%;
+  justify-content: center;
+  color: var(--ink-2);
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.embed-loading {
+  min-height: 80px;
+}
+
+/* ---------- 文档里的嵌入块 ---------- */
+
+.tiptap .page-embed {
+  position: relative;
+  margin: 0.9em 0;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-l);
+  background: var(--bg);
+  box-shadow: 0 1px 2px rgba(18, 28, 48, 0.04);
+}
+
+.page-embed.is-selected {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.page-embed .embed-head {
+  cursor: grab;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-l) var(--radius-l) 0 0;
+}
+
+.page-embed.is-placeholder .embed-head {
+  border-radius: var(--radius-l) var(--radius-l) 0 0;
+}
+
+.embed-grip {
+  width: 14px;
+  height: 14px;
+  margin-left: -4px;
+  color: var(--ink-3);
+  opacity: 0.6;
+}
+
+.page-embed:hover .embed-grip {
+  opacity: 1;
+}
+
+/* 嵌入的文档：正文直接排在框里 */
+.page-embed-doc > .embed-body {
+  padding: 6px 22px 12px;
+}
+
+.embed-doc .tiptap {
+  font-size: 15.5px;
+  min-height: 1.75em;
+}
+
+.embed-doc .tiptap > :first-child {
+  margin-top: 0.2em;
+}
+
+/* 嵌入的画布：固定高度的窗口 */
+.embed-canvas {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0 0 var(--radius-l) var(--radius-l);
+}
+
+.canvas-viewport.is-embedded {
+  position: absolute;
+  inset: 0;
+}
+
+.canvas-viewport.is-embedded.is-inactive {
+  pointer-events: none;
+}
+
+.embed-canvas.is-active {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.embed-canvas-cover {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 0 14px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.embed-canvas-hint {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--bg-pop);
+  border: 1px solid var(--rule);
+  box-shadow: var(--shadow-pop);
+  color: var(--ink-2);
+  font-size: 12.5px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+.embed-canvas-cover:hover .embed-canvas-hint,
+.embed-canvas-cover:focus-visible .embed-canvas-hint {
+  opacity: 1;
+  transform: none;
+}
+
+.embed-canvas-cover:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* 底边拖动调高度 */
+.embed-resize-y {
+  position: absolute;
+  left: 50%;
+  bottom: 3px;
+  width: 44px;
+  height: 8px;
+  margin-left: -22px;
+  border-radius: 4px;
+  background: var(--bg-pop);
+  border: 1px solid var(--rule-strong);
+  cursor: ns-resize;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  touch-action: none;
+  z-index: 2;
+}
+
+.page-embed:hover .embed-resize-y,
+.page-embed.is-selected .embed-resize-y {
+  opacity: 1;
+}
+
+/* 嵌入画布里的工具条小一点，靠左放，给右边的缩放按钮让出位置；太窄时不显示缩放按钮 */
+.canvas-viewport.is-embedded {
+  container-type: inline-size;
+}
+
+.canvas-viewport.is-embedded .canvas-toolbar {
+  bottom: 8px;
+  left: 8px;
+  transform: scale(0.86);
+  transform-origin: bottom left;
+}
+
+@container (max-width: 460px) {
+  .canvas-viewport.is-embedded .canvas-zoom {
+    display: none;
+  }
+}
+
+.canvas-viewport.is-embedded .canvas-zoom {
+  bottom: 8px;
+  right: 8px;
+  transform: scale(0.86);
+  transform-origin: bottom right;
+}
+
+.canvas-viewport.is-embedded .canvas-empty {
+  font-size: 13px;
+}
+
+/* ---------- 画布上的嵌入卡片 ---------- */
+
+.embed-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  border: 1px solid var(--rule-strong);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(18, 28, 48, 0.06);
+}
+
+.el-embed .embed-head {
+  background: var(--bg-subtle);
+  cursor: default;
+}
+
+.el-embed .embed-body {
+  flex: 1;
+  min-height: 0;
+}
+
+.embed-scroll {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  padding: 6px 18px 14px;
+  overscroll-behavior: contain;
+}
+
+.card-editing .embed-scroll {
+  overflow: auto;
+}
+
+/* 没进入时，嵌入的内容和标题不响应鼠标：点它就是选中、拖动 */
+.canvas-el.el-embed:not(.card-editing) .embed-body,
+.canvas-el.el-embed:not(.card-editing) .embed-title {
+  pointer-events: none;
+}
+
+.canvas-el.el-embed.card-editing {
+  cursor: default;
+}
+
+.el-embed .embed-doc .tiptap {
+  font-size: 15px;
+}
+
+/* 右下角拖动调整大小 */
+.el-resize-corner {
+  position: absolute;
+  right: -8px;
+  bottom: -8px;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--bg);
+  border: 1.5px solid var(--accent);
+  cursor: nwse-resize;
+}
+
+/* ---------- 页面选择框、面包屑 ---------- */
+
+.palette-heading {
+  padding: 10px 16px 0;
+  color: var(--ink-3);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.crumbs.is-embed-trail .crumb-sep {
+  color: var(--accent);
+}
+
+/* 占位里的按钮（恢复、打开、移除）没进入时也能点 */
+.canvas-el.el-embed .embed-placeholder .btn,
+.canvas-el.el-embed .embed-placeholder.is-button {
+  pointer-events: auto;
+}

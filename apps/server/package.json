@@ -1,0 +1,24 @@
+{
+  "name": "@note/server",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch --experimental-strip-types --no-warnings=ExperimentalWarning src/main.ts serve",
+    "build": "tsc --noEmit && node build.mjs",
+    "typecheck": "tsc --noEmit",
+    "set-password": "node --experimental-strip-types --no-warnings=ExperimentalWarning src/main.ts set-password"
+  },
+  "dependencies": {
+    "@hocuspocus/server": "^4.7.1",
+    "ws": "^8.18.0",
+    "y-protocols": "^1.0.6",
+    "yjs": "^13.6.27"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/ws": "^8.5.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.9.0"
+  }
+}

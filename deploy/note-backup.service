@@ -1,0 +1,14 @@
+[Unit]
+Description=Note daily backup (笔记每日备份)
+
+[Service]
+Type=oneshot
+User=note
+Group=note
+EnvironmentFile=/etc/note/note.env
+ExecStart=/usr/bin/node --no-warnings=ExperimentalWarning /opt/note/server/server.mjs backup
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/note /var/backups/note

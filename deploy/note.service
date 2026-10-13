@@ -1,0 +1,23 @@
+[Unit]
+Description=Note sync server (笔记同步服务)
+After=network.target
+
+[Service]
+Type=simple
+User=note
+Group=note
+EnvironmentFile=/etc/note/note.env
+ExecStart=/usr/bin/node --no-warnings=ExperimentalWarning /opt/note/server/server.mjs serve
+Restart=always
+RestartSec=3
+TimeoutStopSec=15
+# 安全加固：只能写自己的数据目录
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/note
+MemoryMax=600M
+
+[Install]
+WantedBy=multi-user.target

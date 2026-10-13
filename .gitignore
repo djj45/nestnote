@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+.vite/
+apps/server/data/
+backups/
+deploy.local.env
+LOCAL.md

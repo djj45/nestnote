@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <script>
+      // 手动选过浅色/深色时，在样式加载前就设好，避免闪一下
+      try {
+        var t = localStorage.getItem('note:theme')
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t
+      } catch (e) {}
+    </script>
+    <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#15181d" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='3' width='22' height='26' rx='4' fill='%232e4fd6'/%3E%3Cpath d='M10 11h10M10 16h10M10 21h6' stroke='%23ffe873' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!-- iPhone"添加到主屏幕"后全屏打开，标题叫"笔记" -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="笔记" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <title>笔记</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

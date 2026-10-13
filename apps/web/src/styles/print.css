@@ -1,0 +1,74 @@
+/* ---------- 打印 / 存为 PDF：只留文档正文，用浅色 ---------- */
+
+@media print {
+  :root,
+  :root[data-theme],
+  :root:not([data-theme='x']) {
+    color-scheme: light;
+    --bg: #ffffff;
+    --bg-subtle: #f6f7fa;
+    --ink: #1d2433;
+    --ink-2: #4c5567;
+    --ink-3: #8a93a3;
+    --rule: #e2e6ed;
+    --rule-strong: #cfd5df;
+    --accent: #2e4fd6;
+    --callout: #fff8d6;
+    --callout-rule: #f1d977;
+    --code-bg: #f3f5f8;
+    --canvas-bg: #f6f7f9;
+    --canvas-dot: #d3d9e2;
+  }
+
+  .sidebar,
+  .sidebar-scrim,
+  .sidebar-resizer,
+  .topbar,
+  .doc-tail,
+  .toasts,
+  .chord-hint,
+  .bubble,
+  .slash-menu,
+  .table-pill,
+  .trash-banner,
+  .embed-actions,
+  .embed-grip,
+  .embed-resize-y,
+  .embed-canvas-cover,
+  .canvas-toolbar,
+  .canvas-zoom,
+  .media-resize,
+  .media-zoom {
+    display: none !important;
+  }
+
+  html,
+  body,
+  #root,
+  .app,
+  .main,
+  .view-scroll {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  .page {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .page-embed,
+  .tiptap table,
+  .tiptap pre,
+  .media {
+    break-inside: avoid;
+  }
+
+  .ProseMirror-selectednode,
+  .page-embed.is-selected {
+    outline: none !important;
+  }
+}

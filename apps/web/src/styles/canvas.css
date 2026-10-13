@@ -1,0 +1,605 @@
+/* ---------- 画布 ---------- */
+
+:root {
+  --canvas-bg: #f6f7f9;
+  --canvas-dot: #d3d9e2;
+  --sticky-yellow: #fff1a6;
+  --sticky-pink: #ffd9e4;
+  --sticky-green: #d6f3cf;
+  --sticky-blue: #d5e6ff;
+  --sticky-purple: #e7defe;
+  --pen-ink: #1d2433;
+  --pen-red: #d6453d;
+  --pen-orange: #e07b13;
+  --pen-green: #2f9e44;
+  --pen-blue: #2e6bd6;
+  --pen-purple: #8a4fd6;
+}
+
+/* 深色：跟随系统（没有手动选浅色时），或者手动选了深色 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --canvas-bg: #121519;
+    --canvas-dot: #2a3039;
+    --sticky-yellow: #4a4220;
+    --sticky-pink: #4b2a36;
+    --sticky-green: #24402b;
+    --sticky-blue: #233650;
+    --sticky-purple: #362c50;
+    --pen-ink: #e4e7ed;
+    --pen-red: #ff7b72;
+    --pen-orange: #f0a050;
+    --pen-green: #69c47a;
+    --pen-blue: #7aa7ff;
+    --pen-purple: #b892ff;
+  }
+}
+
+:root[data-theme='dark'] {
+  --canvas-bg: #121519;
+  --canvas-dot: #2a3039;
+  --sticky-yellow: #4a4220;
+  --sticky-pink: #4b2a36;
+  --sticky-green: #24402b;
+  --sticky-blue: #233650;
+  --sticky-purple: #362c50;
+  --pen-ink: #e4e7ed;
+  --pen-red: #ff7b72;
+  --pen-orange: #f0a050;
+  --pen-green: #69c47a;
+  --pen-blue: #7aa7ff;
+  --pen-purple: #b892ff;
+}
+
+.canvas-page {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.canvas-head {
+  padding: 2px 20px 8px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.canvas-head .page-title {
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+.canvas-viewport {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  outline: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  background-color: var(--canvas-bg);
+  background-image: radial-gradient(circle, var(--canvas-dot) 1px, transparent 1.4px);
+}
+
+.canvas-viewport.tool-hand,
+.canvas-viewport.is-panning {
+  cursor: grab;
+}
+
+.canvas-viewport.is-panning:active {
+  cursor: grabbing;
+}
+
+.canvas-viewport.tool-text,
+.canvas-viewport.tool-sticky,
+.canvas-viewport.tool-arrow {
+  cursor: crosshair;
+}
+
+.canvas-world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+}
+
+/* ---------- 元素 ---------- */
+
+.canvas-el {
+  position: absolute;
+  box-sizing: border-box;
+}
+
+.canvas-el.is-selected {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.el-text {
+  background: var(--bg);
+  border: 1px solid var(--rule-strong);
+  border-radius: 10px;
+  padding: 10px 14px;
+  box-shadow: 0 1px 2px rgba(18, 28, 48, 0.05);
+}
+
+.el-sticky {
+  min-height: 180px;
+  padding: 14px 16px;
+  border-radius: 4px;
+  box-shadow: 0 6px 16px rgba(18, 28, 48, 0.1), 0 1px 2px rgba(18, 28, 48, 0.08);
+}
+
+.sticky-yellow {
+  background: var(--sticky-yellow);
+}
+.sticky-pink {
+  background: var(--sticky-pink);
+}
+.sticky-green {
+  background: var(--sticky-green);
+}
+.sticky-blue {
+  background: var(--sticky-blue);
+}
+.sticky-purple {
+  background: var(--sticky-purple);
+}
+
+.color-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+
+.canvas-el.card-editing {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* 不在编辑时，卡片里的文字不响应鼠标，点它就是选中/拖动 */
+.canvas-el:not(.card-editing) .card-editor {
+  pointer-events: none;
+}
+
+.card-editor .tiptap {
+  outline: none;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 1.6em;
+}
+
+.card-editor .tiptap > :first-child {
+  margin-top: 0;
+}
+
+.card-editor .tiptap > * + * {
+  margin-top: 0.4em;
+}
+
+.card-editor .tiptap h1 {
+  font-size: 1.5em;
+}
+
+.card-editor .tiptap h2 {
+  font-size: 1.25em;
+}
+
+.card-editor .tiptap h3 {
+  font-size: 1.1em;
+}
+
+.el-sticky .card-editor .tiptap {
+  font-size: 15px;
+}
+
+/* 拖动调宽度的把手 */
+.el-resize {
+  position: absolute;
+  right: -9px;
+  top: 50%;
+  width: 10px;
+  height: 30px;
+  margin-top: -15px;
+  border-radius: 5px;
+  background: var(--bg);
+  border: 1.5px solid var(--accent);
+  cursor: ew-resize;
+}
+
+/* 图片、视频、文件 */
+.card-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.card-loading {
+  width: 100%;
+  border-radius: 6px;
+  background: var(--bg-subtle);
+}
+
+.card-media {
+  background: var(--bg);
+  border: 1px solid var(--rule-strong);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.card-media-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 4px 0 10px;
+  font-size: 12.5px;
+  color: var(--ink-2);
+  cursor: grab;
+}
+
+.card-media-bar > .icon {
+  color: var(--accent);
+}
+
+.card-media-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.card-media-size {
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.card-media-actions {
+  display: inline-flex;
+}
+
+.card-media-actions .tool-btn {
+  width: 26px;
+  height: 26px;
+}
+
+.card-video {
+  display: block;
+  width: 100%;
+  background: #000;
+  pointer-events: none;
+}
+
+.card-audio {
+  display: block;
+  width: calc(100% - 16px);
+  margin: 2px 8px 10px;
+  pointer-events: none;
+}
+
+.canvas-el.is-selected .card-video,
+.canvas-el.is-selected .card-audio {
+  pointer-events: auto;
+}
+
+.card-missing {
+  background: var(--bg);
+}
+
+/* ---------- 箭头 ---------- */
+
+.arrow-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
+}
+
+.arrow-line {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 2;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.arrow-head {
+  fill: var(--ink-2);
+}
+
+.arrow-head.is-selected,
+.arrow.is-selected .arrow-line {
+  fill: var(--accent);
+}
+
+.arrow.is-selected .arrow-line {
+  fill: none;
+  stroke: var(--accent);
+}
+
+.arrow-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 16;
+  pointer-events: stroke;
+  cursor: pointer;
+}
+
+.arrow-line.is-preview {
+  stroke: var(--accent);
+  stroke-dasharray: 6 5;
+}
+
+.arrow-end {
+  fill: var(--bg);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+
+/* ---------- 框选、空画布提示 ---------- */
+
+.canvas-marquee {
+  position: absolute;
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  pointer-events: none;
+}
+
+.canvas-empty {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  transform: translate(-50%, -50%);
+  color: var(--ink-3);
+  font-size: 15px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ---------- 工具条、缩放按钮 ---------- */
+
+.canvas-toolbar,
+.canvas-zoom {
+  position: absolute;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  background: var(--bg-pop);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  box-shadow: var(--shadow-pop);
+  user-select: none;
+}
+
+.canvas-toolbar {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.canvas-zoom {
+  right: 16px;
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.canvas-toolbar .tool-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+}
+
+.canvas-toolbar .tool-btn .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.zoom-value {
+  min-width: 50px;
+  height: 30px;
+  border-radius: var(--radius-m);
+  color: var(--ink-2);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.zoom-value:hover {
+  background: var(--bg-hover);
+  color: var(--ink);
+}
+
+@media (max-width: 720px) {
+  .canvas-head {
+    padding: 2px 16px 6px;
+  }
+
+  .canvas-toolbar {
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    left: 12px;
+    transform: none;
+    max-width: calc(100% - 24px);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  /* 窄屏上工具条占满一行，缩放控件放到它上面 */
+  .canvas-zoom {
+    bottom: calc(66px + env(safe-area-inset-bottom));
+    right: 12px;
+  }
+
+  .canvas-viewport.is-readonly .canvas-zoom {
+    bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .canvas-zoom .tool-btn:not(:last-child),
+  .canvas-zoom .zoom-value + .tool-btn {
+    display: none;
+  }
+}
+
+/* ---------- 画笔、橡皮擦、形状 ---------- */
+
+.canvas-viewport.tool-pen,
+.canvas-viewport.tool-rect,
+.canvas-viewport.tool-ellipse {
+  cursor: crosshair;
+}
+
+.canvas-viewport.tool-eraser {
+  cursor: cell;
+}
+
+/* 画的过程中的预览（世界坐标） */
+.ink-preview {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* 笔迹和形状只在线条上能点中，空白的地方点得到下面的东西 */
+.canvas-el.el-draw,
+.canvas-el.el-shape {
+  pointer-events: none;
+}
+
+.canvas-el.el-draw .el-resize-corner,
+.canvas-el.el-shape .el-resize-corner {
+  pointer-events: auto;
+}
+
+.ink-svg,
+.shape-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.ink-fill {
+  pointer-events: visiblePainted;
+}
+
+.ink-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 14px;
+  vector-effect: non-scaling-stroke;
+  pointer-events: stroke;
+}
+
+.shape-svg .ink-hit * {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 14px;
+  pointer-events: stroke;
+}
+
+.canvas-el.el-draw.is-selected,
+.canvas-el.el-shape.is-selected {
+  outline: 1.5px dashed var(--accent);
+  outline-offset: 2px;
+}
+
+.canvas-el.is-erasing {
+  opacity: 0.25;
+}
+
+/* 颜色和粗细 */
+.ink-options {
+  position: absolute;
+  left: 50%;
+  bottom: 70px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px;
+  background: var(--bg-pop);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  box-shadow: var(--shadow-pop);
+}
+
+.ink-color,
+.ink-size {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.ink-color:hover,
+.ink-size:hover {
+  background: var(--bg-hover);
+}
+
+.ink-color span {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+.ink-color.is-active span {
+  box-shadow: 0 0 0 2px var(--bg-pop), 0 0 0 4px var(--accent);
+}
+
+.ink-size span {
+  border-radius: 50%;
+}
+
+.ink-size.is-active {
+  background: var(--bg-active);
+}
+
+.size-dot {
+  display: inline-block;
+  margin: 0 3px;
+  border-radius: 50%;
+  background: var(--ink-2);
+}
+
+.canvas-viewport.is-embedded .ink-options {
+  bottom: 52px;
+  left: 8px;
+  transform: scale(0.86);
+  transform-origin: bottom left;
+}
+
+@media (max-width: 720px) {
+  .canvas-toolbar {
+    max-width: calc(100% - 24px);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .ink-options {
+    left: 12px;
+    bottom: 64px;
+    transform: none;
+  }
+}
